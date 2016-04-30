@@ -1,0 +1,16 @@
+{
+  "name": "miksir/yii2-pg-test",
+  "require": {
+    "php": "~7.0",
+    "yiisoft/yii2": "~2.0.8"
+  },
+  "require-dev": {
+    "yiisoft/yii2-debug": "^2.0"
+  },
+  "extra": {
+    "asset-installer-paths": {
+      "npm-asset-library": "vendor/npm",
+      "bower-asset-library": "vendor/bower"
+    }
+  }
+}

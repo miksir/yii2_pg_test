@@ -16,10 +16,12 @@
     - apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main"
     - apt: update_cache=yes cache_valid_time=86400
 
-    - name: "System packages"
+    - name: "Installing system packages"
       apt:
         name:
           - wget
+          - git
+          - unzip
 
     - apt: name="postgresql-9.5"
     - apt: name="python-psycopg2"
@@ -29,6 +31,12 @@
       sudo_user: postgres
     - postgresql_user: name="postgres" password="vagrant"
       sudo_user: postgres
+    - lineinfile: dest=/etc/postgresql/9.5/main/postgresql.conf state=present regexp='(?i)^#?listen_addresses\s*=' line="listen_addresses = '*'"
+      notify:
+        - restart postgresql
+    - lineinfile: dest=/etc/postgresql/9.5/main/pg_hba.conf state=present line="host all all all md5"
+      notify:
+        - restart postgresql
 
     - name: "Installing PHP 7.0"
       apt:
@@ -42,6 +50,7 @@
           - php7.0-opcache
           - php-xdebug
           - php-redis
+          - php7.0-mbstring
     - name: "Fix FPM php.ini"
       lineinfile: dest=/etc/php/7.0/fpm/php.ini state=present regexp="{{ item.regexp }}" line="{{ item.line }}"
       with_items: phpinilist
@@ -78,12 +87,14 @@
     - stat: path=/home/vagrant/bin/composer
       register: composer_stat
     - shell: sh /vagrant/vagrantup/composer_install.sh
+      sudo: no
       when: composer_stat.stat.exists == False
+
 
   handlers:
     - name: restart php
-      service: name=php7.0-fpm state=reloaded
+      service: name=php7.0-fpm state=restarted
     - name: restart nginx
-      service: name=nginx state=reloaded
+      service: name=nginx state=restarted
     - name: restart postgresql
-      service: name=postgresql state=reloaded
+      service: name=postgresql state=restarted

@@ -8,3 +8,5 @@ cd /home/vagrant/bin && \
   chmod 755 composer
 
 rm installer 2>/dev/null
+
+./composer global require "fxp/composer-asset-plugin:~1.1.0"
