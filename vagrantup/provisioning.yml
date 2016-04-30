@@ -1,0 +1,89 @@
+---
+- hosts: localhost
+  sudo: yes
+  any_errors_fatal: true
+
+  vars:
+    phpinilist:
+      - { regexp: '(?i)^;?display_errors\s*=', line: "display_errors = On" }
+      - { regexp: '(?i)^;?cgi.fix_pathinfo\s*=', line: "cgi.fix_pathinfo = 0" }
+      - { regexp: '(?i)^;?date.timezone\s*=', line: "date.timezone = Europe/Moscow" }
+
+  tasks:
+    - locale_gen: name="ru_RU.UTF-8" state=present
+    - apt_repository: repo="ppa:ondrej/php"
+    - apt_key: url="https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+    - apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main"
+    - apt: update_cache=yes cache_valid_time=86400
+
+    - name: "System packages"
+      apt:
+        name:
+          - wget
+
+    - apt: name="postgresql-9.5"
+    - apt: name="python-psycopg2"
+    - postgresql_user: name="vagrant" password="vagrant"
+      sudo_user: postgres
+    - postgresql_db: encoding=UTF-8 lc_collate=en_US.UTF-8 lc_ctype=en_US.UTF-8 name=vagrant owner=vagrant template=template0
+      sudo_user: postgres
+    - postgresql_user: name="postgres" password="vagrant"
+      sudo_user: postgres
+
+    - name: "Installing PHP 7.0"
+      apt:
+        name:
+          - php7.0-fpm
+          - php7.0-cli
+          - php7.0-mcrypt
+          - php7.0-readline
+          - php7.0-pgsql
+          - php7.0-json
+          - php7.0-opcache
+          - php-xdebug
+          - php-redis
+    - name: "Fix FPM php.ini"
+      lineinfile: dest=/etc/php/7.0/fpm/php.ini state=present regexp="{{ item.regexp }}" line="{{ item.line }}"
+      with_items: phpinilist
+      notify:
+        - restart php
+    - name: "Fix CLI php.ini"
+      lineinfile: dest=/etc/php/7.0/cli/php.ini state=present regexp="{{ item.regexp }}" line="{{ item.line }}"
+      with_items: phpinilist
+    - file: path=/etc/php/7.0/fpm/pool.d/www.conf state=absent
+      notify:
+        - restart php
+    - name: "Setup PHP FPM pool"
+      ini_file: dest=/etc/php/7.0/fpm/pool.d/vagrant.conf section=vagrant option="{{ item.key }}" value="{{ item.value }}"
+      with_dict:
+        user: vagrant
+        group: vagrant
+        listen: 0.0.0.0:7000
+        pm: static
+        pm.max_children: 4
+        pm.max_requests: 10000
+        request_terminate_timeout: 62
+      notify:
+        - restart php
+
+    - apt: name="nginx"
+    - file: path=/etc/nginx/sites-enabled/default state=absent
+      notify:
+        - restart nginx
+    - file: path=/etc/nginx/sites-available/default state=absent
+    - template: src=templates/nginx.conf dest=/etc/nginx/conf.d/vagrant.conf
+      notify:
+        - restart nginx
+
+    - stat: path=/home/vagrant/bin/composer
+      register: composer_stat
+    - shell: sh /vagrant/vagrantup/composer_install.sh
+      when: composer_stat.stat.exists == False
+
+  handlers:
+    - name: restart php
+      service: name=php7.0-fpm state=reloaded
+    - name: restart nginx
+      service: name=nginx state=reloaded
+    - name: restart postgresql
+      service: name=postgresql state=reloaded
