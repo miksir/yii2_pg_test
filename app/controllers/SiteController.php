@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Video;
 use Yii;
 use yii\web\Controller;
 
@@ -19,6 +20,9 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = Video::find()->orderBy(['views' => SORT_DESC])->offset(800000)->limit(50)->all();
+        
+        return print_r($model[0], true);
+        //return $this->render('index');
     }
 }

@@ -5,7 +5,9 @@
     "yiisoft/yii2": "~2.0.8"
   },
   "require-dev": {
-    "yiisoft/yii2-debug": "^2.0"
+    "yiisoft/yii2-debug": "^2.0",
+    "yiisoft/yii2-faker": "^2.0",
+    "miksir/yii2-db-faker": "^1.0"
   },
   "extra": {
     "asset-installer-paths": {
