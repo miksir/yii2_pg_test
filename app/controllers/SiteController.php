@@ -3,7 +3,6 @@
 namespace app\controllers;
 
 use app\models\Video;
-use Yii;
 use yii\web\Controller;
 
 class SiteController extends Controller

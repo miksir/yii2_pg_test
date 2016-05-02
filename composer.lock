@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a1288137e6797324f736f1953ba46342",
-    "content-hash": "87e2c52a5b5dda1974f3517ac3033739",
+    "hash": "be2a1027843f04eb69b9601834ba94b1",
+    "content-hash": "4798aad02b99772ed8767d9c29676070",
     "packages": [
         {
             "name": "bower-asset/jquery",
@@ -492,16 +492,16 @@
         },
         {
             "name": "miksir/yii2-db-faker",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/miksir/yii2-db-faker.git",
-                "reference": "63459913cf6a25f83e9d89e2e3e775e32a80e184"
+                "reference": "8ed002b1d796eb83a65052e166478f9078d995bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/miksir/yii2-db-faker/zipball/63459913cf6a25f83e9d89e2e3e775e32a80e184",
-                "reference": "63459913cf6a25f83e9d89e2e3e775e32a80e184",
+                "url": "https://api.github.com/repos/miksir/yii2-db-faker/zipball/8ed002b1d796eb83a65052e166478f9078d995bf",
+                "reference": "8ed002b1d796eb83a65052e166478f9078d995bf",
                 "shasum": ""
             },
             "require": {
@@ -525,7 +525,7 @@
                 }
             ],
             "description": "Fill your database table with fake data",
-            "time": "2016-05-01 22:24:21"
+            "time": "2016-05-02 01:31:29"
         },
         {
             "name": "yiisoft/yii2-bootstrap",
@@ -674,9 +674,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "miksir/yii2-db-faker": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
