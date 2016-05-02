@@ -1,9 +1,11 @@
 <?php
 
-namespace app\models\query;
+namespace app\models\queries;
 
-use app\models\view\VideoMV;
+use app\models\views\VideoView;
 use yii\db\ActiveQuery;
+use yii\db\Expression;
+use yii\db\Query;
 
 class VideoQuery extends ActiveQuery
 {
@@ -12,7 +14,7 @@ class VideoQuery extends ActiveQuery
      */
     public function __construct()
     {
-        parent::__construct(VideoMV::class);
+        parent::__construct(VideoView::class);
     }
 
     /**
@@ -50,11 +52,30 @@ class VideoQuery extends ActiveQuery
     
     private function checkAndRewrieOffset($field_name)
     {
-        if ($this->offset) {
+        if ($this->offset > 0) {
             $this->andWhere(['>=', $field_name, $this->offset]);
             $this->offset = null;
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function count($q = '*', $db = null)
+    {
+        if ($q == '*') {
+            $modelClass = $this->modelClass;
+            $tableName = $modelClass::tableName();
+            return (new Query())->select(new Expression('reltuples::bigint'))
+                ->from('pg_class')
+                ->where(['relname' => $tableName])
+                ->createCommand($db)
+                ->queryScalar();
+        }
+        
+        return parent::count($q, $db);
+    }
+
 
     /**
      * @inheritDoc
@@ -70,7 +91,7 @@ class VideoQuery extends ActiveQuery
     
     /**
      * @inheritDoc
-     * @return VideoMV|array|null
+     * @return VideoView|array|null
      */
     public function one($db = null)
     {
@@ -79,7 +100,7 @@ class VideoQuery extends ActiveQuery
 
     /**
      * @inheritDoc
-     * @return VideoMV[]|array
+     * @return VideoView[]|array
      */
     public function all($db = null)
     {

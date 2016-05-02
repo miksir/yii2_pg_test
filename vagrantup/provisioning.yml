@@ -74,6 +74,19 @@
         request_terminate_timeout: 62
       notify:
         - restart php
+    - name: "Enable Remote Xdebug"
+      ini_file: dest=/etc/php/7.0/fpm/conf.d/20-xdebug-config.ini section=xdebug option="{{ item.key }}" value="{{ item.value }}"
+      with_dict:
+        xdebug.remote_enable: on
+        xdebug.remote_host: "localhost"
+        xdebug.remote_port: 9000
+        xdebug.remote_connect_back: on
+      notify:
+        - restart php
+    - name: "And remove xdebug for cli"
+      file: path=/etc/php/7.0/cli/conf.d/20-xdebug.ini state=absent
+      notify:
+        - restart php
 
     - apt: name="nginx"
     - file: path=/etc/nginx/sites-enabled/default state=absent

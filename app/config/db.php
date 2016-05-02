@@ -6,4 +6,7 @@ return [
     'username' => 'vagrant',
     'password' => 'vagrant',
     'charset' => 'utf8',
+    'enableSchemaCache' => true,
+    'schemaCacheDuration' => 3600,
+    'schemaCache' => 'cache',
 ];

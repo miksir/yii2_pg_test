@@ -31,9 +31,16 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '/' => 'site/index'
+                '/' => 'site/index',
+                '/videos/<page:\d+>' => 'site/videos',
+                '/videos' => 'site/videos',
             ],
         ],
+        'formatter' => [
+            'class' => \app\helpers\Formatter::class,
+            'decimalSeparator' => '.',
+            'thousandSeparator' => ' ',
+        ]
     ],
     'params' => $params,
 ];
@@ -43,6 +50,7 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
+        'allowedIPs' => ['*'],
     ];
 }
 

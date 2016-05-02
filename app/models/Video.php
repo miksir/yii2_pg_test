@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\models\query\VideoQuery;
+use app\models\queries\VideoQuery;
 use yii\db\ActiveRecord;
 
 /**

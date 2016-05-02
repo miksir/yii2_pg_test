@@ -1,14 +1,14 @@
 <?php
 
 
-namespace app\models\view;
+namespace app\models\views;
 use app\models\Video;
 
 /**
  * @property int $rows_time_add
  * @property int $rows_views
  */
-class VideoMV extends Video
+class VideoView extends Video
 {
     /**
      * @inheritDoc

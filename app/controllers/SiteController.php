@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
-use app\models\Video;
+use app\dataProviders\VideoDataProvider;
+use app\forms\VideoList;
+use yii\data\DataProviderInterface;
 use yii\web\Controller;
 
 class SiteController extends Controller
@@ -19,9 +21,16 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $model = Video::find()->orderBy(['views' => SORT_DESC])->offset(800000)->limit(50)->all();
-        
-        return print_r($model[0], true);
-        //return $this->render('index');
+        $this->redirect(['site/videos']);
+    }
+
+    public function actionVideos()
+    {
+        \Yii::$container->set(DataProviderInterface::class, VideoDataProvider::class);
+        $form = \Yii::$container->get(VideoList::class);
+
+        return $this->render('videos', [
+            'form' => $form
+        ]);
     }
 }
